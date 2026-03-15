@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Task name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Priority</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for tasks in tasks %}
+    <tr>
+      <td>{{tasks.task_name}}</td>
+      <td>{{tasks.status}}</td>
+      <td>{{tasks.priority}}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+
+{% endblock %}
