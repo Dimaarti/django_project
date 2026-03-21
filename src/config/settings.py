@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import environ
 import os
-from config.env import env
+from config.env import env, BASE_DIR
+from django.conf.global_settings import STATICFILES_DIRS
 
 # False if not in os.environ because of casting above
 DEBUG = env('DEBUG')
@@ -25,14 +26,11 @@ SECRET_KEY = env('SECRET_KEY')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #applications
+    # applications
     'task_manager'
 ]
 
@@ -62,7 +60,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [(os.path.join(BASE_DIR.parent, "templates/tasks"))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,7 +73,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -110,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -122,8 +118,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'static/images',
+]

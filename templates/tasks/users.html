@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Age</th>
+        <th scope="col">Photo</th>
+    </tr>
+
+    </thead>
+    <tbody>
+    {% for user in users%}
+    <tr>
+
+        <td>{{user.name}}</td>
+        <td>{{user.age}}</td>
+        <td>
+            <img src="{% static 'Alice.jpg' %}" alt="Alice" width="50">
+            <img src="{% static 'Bob.jpg' %}" alt="Bob" width="50">
+            <img src="{% static 'Charlie.jpg' %}" alt="Charlie" width="50">
+            <img src="{% static 'Diana.jpg' %}" alt="Diana" width="50">
+        </td>
+
+
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
