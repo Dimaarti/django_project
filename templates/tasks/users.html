@@ -2,34 +2,61 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .table-emerald thead {
+        background-color: #10b981;
+        color: white;
+    }
 
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Age</th>
-        <th scope="col">Photo</th>
-    </tr>
+    .table-emerald tbody tr:hover {
+        background-color: #d1fae5;
+    }
 
-    </thead>
-    <tbody>
-    {% for user in users%}
-    <tr>
+    .table-emerald td:hover,
+    .table-emerald th:hover {
+        background-color: #C0C0C0;
+    }
 
-        <td>{{user.name}}</td>
-        <td>{{user.age}}</td>
-        <td>
-            <img src="{% static 'Alice.jpg' %}" alt="Alice" width="50">
-            <img src="{% static 'Bob.jpg' %}" alt="Bob" width="50">
-            <img src="{% static 'Charlie.jpg' %}" alt="Charlie" width="50">
-            <img src="{% static 'Diana.jpg' %}" alt="Diana" width="50">
-        </td>
+    .table-emerald td,
+    .table-emerald th {
+        transition: background-color 0.1s;
+    }
+</style>
+
+<style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    table, th, td {
+      border: 1px solid silver;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+</style>
 
 
-    </tr>
-    {% endfor %}
+<div class="container mt-4" style="max-width: 1000px;">
+    <table class="table table-striped table-hover table-emerald" border="1">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+        </tr>
 
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% for user in users%}
+        <tr>
+            <td>{{user.name}}</td>
+            <td>{{user.age}}</td>
+        </tr>
+        {% endfor %}
 
+
+        </tbody>
+    </table>
+</div>
 {% endblock %}
