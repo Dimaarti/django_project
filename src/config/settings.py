@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     # applications
-    'task_manager'
+    'task_manager',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +91,8 @@ DATABASES = {
     },
 }
 
+AUTH_USER_MODEL = "account.User"
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -124,5 +128,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / 'static/images',
+    BASE_DIR.parent / "static/images",
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
