@@ -1,7 +1,8 @@
 from django.db import models
-from  django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from config.models import BaseModel
+from task_manager.managers import TaskManager
 
 
 class TasksStatus(models.TextChoices):
@@ -54,12 +55,19 @@ class Tasks(BaseModel):
         null=True
     )
 
+    objects = TaskManager()
 
     class Meta:
-        ordering = ['-created_at','-priority',]
+        ordering = ['-created_at', '-priority', ]
         db_table = 'tasks'
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
 
     def __str__(self):
         return self.name
+
+
+class EducationTasks(Tasks):
+    class Meta:
+        proxy = True
+

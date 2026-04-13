@@ -6,5 +6,4 @@ urlpatterns = [
     path('tasks/', tasks, name = 'tasks'),
     path('users/', users, name = 'users'),
     path('home/', home, name = 'home'),
-
 ]
