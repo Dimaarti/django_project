@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'debug_toolbar',
     # applications
-    'task_manager',
-    'account',
+    'task_manager.apps.TaskManagerConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
