@@ -78,10 +78,10 @@ class TasksAdmin(admin.ModelAdmin):
     def reopened(self, request, queryset):
         queryset.update(is_reopened=False)
 
-    @admin.action(description="Create comment")
-    def create_comment(self, request, queryset):
-        for task in queryset:
-            Comments.objects.create(task=task, message="Processed by admin")
+    # @admin.action(description="Create comment")
+    # def create_comment(self, request, queryset):
+    #     for task in queryset:
+    #         Comments.objects.create(task=task, message="Processed by admin")
 
 
 @admin.register(Tags)

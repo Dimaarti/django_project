@@ -44,6 +44,8 @@
             <th scope="col">name</th>
             <th scope="col">Assignee</th>
             <th scope="col">Comments</th>
+            <th scope="col">Edit task</th>
+            <th scope="col">Add comment</th>
         </tr>
 
         </thead>
@@ -51,12 +53,16 @@
         {% for task in tasks %}
         <tr>
             <td>{{task.name}}</td>
+
             <td>{{task.assignee.email}}</td>
             <td>
                 {% for comment in task.comments.all %}
-                    {{comment.message}}
+                {{comment.message}}
+
                 {% endfor %}
             </td>
+            <td><a href="{% url 'edit_task' task.id %}">Редактировать</a></td>
+            <td><a href="{% url 'comments_adding' task.id %}">Comment adding</a></td>
         </tr>
         {% endfor %}
         <tr>
