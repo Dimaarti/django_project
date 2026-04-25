@@ -9,7 +9,7 @@ from config.models import BaseModel
 class Comments(BaseModel):
     message = models.CharField(
         max_length=64,
-        unique=True,
+        unique=False,
         verbose_name="Текст комментария"
     )
 
