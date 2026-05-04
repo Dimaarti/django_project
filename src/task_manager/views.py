@@ -1,5 +1,5 @@
-
-
+from django.db import transaction
+from django.db.transaction import atomic
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -48,11 +48,21 @@ def comments_adding(request, task_id):
     return render(request, "comments_adding.html", {"form": form, "task": task})
 
 
+@transaction.atomic
 def task_create(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save()
+            task = form.save()
+            comments_list = request.POST.getlist("comments")
+            (Comments.objects.bulk_create([
+                Comments
+                (task=task,
+                 message=message
+                 )
+                for message in comments_list
+            ])
+            )
             return redirect("/tasks/")
     else:
         form = TaskForm()
@@ -70,6 +80,4 @@ def edit_task(request, task_id):
     else:
         form = TaskForm(instance=task)
 
-    return render(request, "edit_task.html", {"form":form, "task":task})
-
-
+    return render(request, "edit_task.html", {"form": form, "task": task})
