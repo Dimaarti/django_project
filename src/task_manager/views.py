@@ -105,32 +105,32 @@ def attachments(request):
     return render(request, "attachments.html", context=context)
 
 
-# def create_attachments(request):
-#     if request.method == "POST":
-#         form = AttachmentsForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#         return redirect("attachments")
-#     else:
-#         form = AttachmentsForm()
-#
-#     return render(request, "task_attachments.html", {"form": form})
+def create_attachments(request):
+    if request.method == "POST":
+        form = AttachmentsForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return redirect("attachments")
+    else:
+        form = AttachmentsForm()
+
+    return render(request, "task_attachments.html", {"form": form})
 
 
-#
-def save_attachments(file_path, task_id):
-    path = Path(file_path)
-    task = Tasks.objects.get(id=task_id)
-    attachment = Attachments(task=task, name=path.name)
-    with path.open(mode="rb") as f:
-        attachment.file.save(
-            path.name,
-            File(f),
-            save=True
-        )
-    return attachment
 
-def create_attachments(file_path, task_id):
-    save_attachments("media_files/spacs.pdf", task_id=4)
-    return redirect("attachments")
+#Сохранение файла из внешнего пути
 
+# def save_attachments(file_path, task_id=4):
+#     path = Path("/Users/tatya/OneDrive/Рабочий стол/FFF.txt")
+#     task = Tasks.objects.get(id=task_id)
+#     attachment = Attachments(
+#         task=task,
+#         name=path.name
+#     )
+#     with path.open(mode="rb") as f:
+#         attachment.file = File(
+#             f,
+#             name=path.name
+#         )
+#         attachment.save()
+#     return attachment

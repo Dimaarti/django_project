@@ -137,16 +137,26 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR.parent / "static"
 
-#media
+# media
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'media_files'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# storages
 
+STORAGES = {
+    'default': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    }
+}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
