@@ -1,6 +1,6 @@
 from django import forms
 
-from task_manager.models import Tasks
+from task_manager.models import Tasks, Attachments
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -44,3 +44,8 @@ class TaskForm(forms.ModelForm):
         if priority == 5 is not description:
             raise forms.ValidationError("Приоритет без описания не может быть высоким")
         return cleaned_data
+
+class AttachmentsForm(forms.ModelForm):
+    class Meta:
+        model = Attachments
+        fields = ["name", "photo", "file", "task"]

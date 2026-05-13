@@ -1,12 +1,17 @@
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.transaction import atomic
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from task_manager.models import Tasks, Comments
+from django.utils.safestring import mark_safe
+
+from task_manager.models import Tasks, Comments, Attachments
 from account.models import User
 from task_manager.models.tasks import EducationTasks
-from .forms import CommentForm, TaskForm
+from .forms import CommentForm, TaskForm, AttachmentsForm
+from pathlib import Path
+from django.core.files import File
 
 
 # MTV
@@ -18,8 +23,13 @@ def index(request):
 
 
 def tasks(request):
+    task = Tasks.objects.select_related("assignee").prefetch_related("comments").all()
+    paginator = Paginator(task, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        "tasks": Tasks.objects.select_related("assignee").prefetch_related("comments").all()
+        "tasks": page_obj,
+        "page_obj": page_obj,
     }
     return render(request, "tasks.html", context=context)
 
@@ -81,3 +91,46 @@ def edit_task(request, task_id):
         form = TaskForm(instance=task)
 
     return render(request, "edit_task.html", {"form": form, "task": task})
+
+
+def attachments(request):
+    attachment = Attachments.objects.prefetch_related("task").all()
+    paginator = Paginator(attachment, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    context = {
+        "attachments": page_obj,
+        "page_obj": page_obj,
+    }
+    return render(request, "attachments.html", context=context)
+
+
+# def create_attachments(request):
+#     if request.method == "POST":
+#         form = AttachmentsForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#         return redirect("attachments")
+#     else:
+#         form = AttachmentsForm()
+#
+#     return render(request, "task_attachments.html", {"form": form})
+
+
+#
+def save_attachments(file_path, task_id):
+    path = Path(file_path)
+    task = Tasks.objects.get(id=task_id)
+    attachment = Attachments(task=task, name=path.name)
+    with path.open(mode="rb") as f:
+        attachment.file.save(
+            path.name,
+            File(f),
+            save=True
+        )
+    return attachment
+
+def create_attachments(file_path, task_id):
+    save_attachments("media_files/spacs.pdf", task_id=4)
+    return redirect("attachments")
+

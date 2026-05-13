@@ -18,6 +18,17 @@ class Attachments(BaseModel):
         related_name='attachments',
         on_delete=models.CASCADE,
     )
+    file = models.FileField(
+        upload_to='attachments_file',
+        null=True, blank=True,
+        verbose_name='Файлы'
+    )
+    photo = models.ImageField(
+        upload_to='attachments_photo',
+        null=True,
+        blank=True,
+        verbose_name='Фото'
+    )
 
 
 

@@ -14,7 +14,7 @@ from pathlib import Path
 import environ
 import os
 from config.env import env, BASE_DIR
-from django.conf.global_settings import STATICFILES_DIRS
+from django.conf.global_settings import STATICFILES_DIRS, MEDIA_URL
 
 # False if not in os.environ because of casting above
 DEBUG = env('DEBUG')
@@ -134,6 +134,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR.parent / "static/images",
 ]
+
+STATIC_ROOT = BASE_DIR.parent / "static"
+
+#media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media_files'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

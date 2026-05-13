@@ -106,8 +106,11 @@ class CommentsAdmin(admin.ModelAdmin):
 
 
 class AttachmentsAdmin(admin.ModelAdmin):
-    pass
-
+    list_display = ["name", "task", "display_photo", "file"]
+    @admin.display(description="Картинка")
+    def display_photo(self, instance):
+        if instance.photo:
+            return mark_safe(f"<img src='{instance.photo.url}' width='100' height='50' />")
 
 admin.site.register(Comments, CommentsAdmin)
 admin.site.register(Attachments, AttachmentsAdmin)
