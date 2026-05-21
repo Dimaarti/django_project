@@ -61,7 +61,6 @@
             <th scope="col">Assignee</th>
             <th scope="col">Comments</th>
             <th scope="col">Edit task</th>
-            <th scope="col">Add comment</th>
             <th scope="col">Attachments</th>
         </tr>
 
@@ -74,12 +73,15 @@
             <td>{{task.assignee.email}}</td>
             <td>
                 {% for comment in task.comments.all %}
-                {{comment.message}}
+                <p>
+                    {{comment.message}}
+                    <a href="{% url 'comments_delete' comment.pk %}">Удалить комментарий</a>
+                </p>
                 {% endfor %}
             </td>
 
             <td><a href="{% url 'edit_task' task.id %}">Редактировать</a></td>
-            <td><a href="{% url 'comments_adding' task.id %}">Добавить комментарий</a></td>
+
             <td>
                 {% for attachment in task.attachments.all %}
                 {% if attachment.photo %}

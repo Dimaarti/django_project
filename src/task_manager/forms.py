@@ -1,6 +1,6 @@
 from django import forms
 
-from task_manager.models import Tasks, Attachments
+from task_manager.models import Tasks, Attachments, Comments
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
