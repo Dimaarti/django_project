@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load cache %}
+
 <style>
     .table-emerald thead {
         background-color: #808080;
@@ -65,7 +67,9 @@
         </tr>
 
         </thead>
+
         <tbody>
+        {% cache 1200 attachment.photo %}
         {% for task in tasks %}
         <tr>
             <td>{{task.name}}</td>
@@ -83,6 +87,7 @@
             <td><a href="{% url 'edit_task' task.id %}">Редактировать</a></td>
 
             <td>
+
                 {% for attachment in task.attachments.all %}
                 {% if attachment.photo %}
                 <img style="max-height: 100px" src="{{attachment.photo.url}}"/>
@@ -91,10 +96,7 @@
             </td>
         </tr>
         {% endfor %}
-        <tr>
-
-        </tr>
-
+        {% endcache %}
         </tbody>
     </table>
 

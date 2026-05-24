@@ -1,5 +1,7 @@
 from audioop import reverse
+from linecache import cache
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -8,9 +10,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, DetailView, CreateView, DeleteView
 from django.views.generic.list import ListView
+from pygments.lexer import default
+
 from task_manager.models import Tasks, Comments, Attachments
 from account.models import User
 from task_manager.models.tasks import EducationTasks
@@ -62,16 +68,18 @@ class TaskView(ListView):
 #     }
 #     return render(request, "users.html", context=context)
 
+@method_decorator(cache_page(60*10, cache="redis_cache"), name="dispatch")
 class UserListView(ListView):
     model = User
     template_name = "users.html"
     queryset = User.objects.all()
+
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
         context["users"] = self.queryset
         return context
 
-
+@method_decorator(cache_page(60*30, cache="db_cache"), name="dispatch")
 class HomePageView(TemplateView):
     template_name = "home.html"
 
@@ -92,7 +100,7 @@ class CommentsDeleteView(LoginRequiredMixin, DeleteView):
     model = Comments
     template_name = "comments_delete.html"
     success_message = "Comment deleted successfully"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("tasks")
 
 
 # @transaction.atomic
@@ -116,6 +124,8 @@ class CommentsDeleteView(LoginRequiredMixin, DeleteView):
 #
 #     return render(request, "task_create.html", {"form": form})
 
+
+
 class TaskCreateView(CreateView):
     form_class = TaskForm
     template_name = "task_create.html"
@@ -133,6 +143,7 @@ class TaskCreateView(CreateView):
 #         form = TaskForm(instance=task)
 #
 #     return render(request, "edit_task.html", {"form": form, "task": task})
+
 
 class TaskEdit(CreateView, Tasks):
     form_class = TaskForm

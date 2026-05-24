@@ -160,3 +160,23 @@ INTERNAL_IPS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# caches
+
+
+CACHES = {
+    "db_cache": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "cache_table",
+    },
+
+    "default":{
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "c:/foo/bar",
+    },
+
+    "redis_cache":{
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
