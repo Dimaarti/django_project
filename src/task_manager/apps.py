@@ -8,6 +8,6 @@ class TaskManagerConfig(AppConfig):
     verbose_name = 'Менеджер задач'
 
     def ready(self):
-        from task_manager.signals import my_add_comment
+        import task_manager.signals
 
 

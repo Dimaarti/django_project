@@ -1,0 +1,17 @@
+{% extends "base.html"%}
+
+{% block content%}
+
+
+<p>
+<h3>Удаление комментария</h3>
+
+
+<p>{{ object.message }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Удалить</button>
+</form>
+
+{% endblock %}

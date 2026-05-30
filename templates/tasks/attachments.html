@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% load cache %}
-
 <style>
     .table-emerald thead {
         background-color: #808080;
@@ -22,7 +20,22 @@
     .table-emerald th {
         transition: background-color 0.1s;
     }
-.page-link {
+</style>
+
+
+<style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    table, th, td {
+      border: 1px solid silver;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    .page-link {
   color: #808080; /* Фиолетовый цвет */
 }
 
@@ -40,66 +53,40 @@
 }
 </style>
 
-
-<style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    table, th, td {
-      border: 1px solid silver;
-    }
-    th, td {
-      padding: 10px;
-      text-align: center;
-    }
-</style>
-
 <div class="container mt-4" style="max-width: 1000px;">
     <table class="table table-striped table-hover table-emerald" border="2">
         <thead>
         <tr>
             <th scope="col">name</th>
-            <th scope="col">Assignee</th>
-            <th scope="col">Comments</th>
-            <th scope="col">Edit task</th>
-            <th scope="col">Attachments</th>
+            <th scope="col">task</th>
+            <th scope="col">photo</th>
+            <th scope="col">file</th>
         </tr>
 
         </thead>
-
         <tbody>
-        {% cache 1200 attachment.photo %}
-        {% for task in tasks %}
+        {% for attachment in attachments %}
         <tr>
-            <td>{{task.name}}</td>
+            <td>{{attachment.name}}</td>
 
-            <td>{{task.assignee.email}}</td>
+            <td>{{attachment.task}}</td>
             <td>
-                {% for comment in task.comments.all %}
-                <p>
-                    {{comment.message}}
-                    <a href="{% url 'comments_delete' comment.pk %}">Удалить комментарий</a>
-                </p>
-                {% endfor %}
-            </td>
-
-            <td><a href="{% url 'edit_task' task.id %}">Редактировать</a></td>
-
-            <td>
-
-                {% for attachment in task.attachments.all %}
                 {% if attachment.photo %}
                 <img style="max-height: 100px" src="{{attachment.photo.url}}"/>
                 {% endif %}
-                {% endfor %}
+            </td>
+            <td>{{attachment.file}}</td>
+
+
             </td>
         </tr>
         {% endfor %}
-        {% endcache %}
+        <tr>
+
+        </tr>
+
         </tbody>
     </table>
-
 
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation example">
