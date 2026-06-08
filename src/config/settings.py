@@ -14,7 +14,7 @@ from pathlib import Path
 import environ
 import os
 from config.env import env, BASE_DIR
-from django.conf.global_settings import STATICFILES_DIRS
+from django.conf.global_settings import STATICFILES_DIRS, MEDIA_URL
 
 # False if not in os.environ because of casting above
 DEBUG = env('DEBUG')
@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'debug_toolbar',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'rest_framework',
+    'drf_spectacular',
     # applications
     'task_manager.apps.TaskManagerConfig',
     'account.apps.AccountConfig',
@@ -133,9 +137,64 @@ STATICFILES_DIRS = [
     BASE_DIR.parent / "static/images",
 ]
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_ROOT = BASE_DIR.parent / "static"
 
+# media
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media_files'
+
+# storages
+
+STORAGES = {
+    'default': {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    }
+}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# caches
+
+
+CACHES = {
+    "db_cache": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "cache_table",
+    },
+
+    "default":{
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "c:/foo/bar",
+    },
+
+    "redis_cache":{
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+#rest framework
+
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Task tracker',
+    'DESCRIPTION': 'Your help',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}

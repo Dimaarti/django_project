@@ -45,8 +45,8 @@ class Command(BaseCommand):
 
 
         self.stdout.write("Генерация задач")
-        batch_size = 10000
-        for i in range(0, 1000000, batch_size):
+        batch_size = 1000
+        for i in range(0, 100000, batch_size):
             tasks = [
                 Tasks(
                     name=fake.sentence(nb_words=4),
