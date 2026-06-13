@@ -1,6 +1,4 @@
-from audioop import reverse
 from linecache import cache
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
@@ -15,7 +13,6 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, DetailView, CreateView, DeleteView
 from django.views.generic.list import ListView
-from pygments.lexer import default
 
 from task_manager.models import Tasks, Comments, Attachments
 from account.models import User
@@ -68,7 +65,8 @@ class TaskView(ListView):
 #     }
 #     return render(request, "users.html", context=context)
 
-@method_decorator(cache_page(60*10, cache="redis_cache"), name="dispatch")
+@method_decorator(
+    cache_page(60*10, cache="redis_cache"), name="dispatch")
 class UserListView(ListView):
     model = User
     template_name = "users.html"

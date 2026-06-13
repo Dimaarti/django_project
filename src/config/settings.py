@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'rest_framework',
     'drf_spectacular',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     # applications
     'task_manager.apps.TaskManagerConfig',
     'account.apps.AccountConfig',
@@ -172,23 +174,27 @@ CACHES = {
         "LOCATION": "cache_table",
     },
 
-    "default":{
+    "default": {
         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": "c:/foo/bar",
+        "LOCATION": "/var/tmp/django_cache",
     },
 
-    "redis_cache":{
+    "redis_cache": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
 
-#rest framework
-
+# rest framework
 
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 }
 
 SPECTACULAR_SETTINGS = {
@@ -197,4 +203,19 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
+}
+
+# jwt
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=int(env('ACCESS_TOKEN_LIFETIME_MINUTES'))
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=int(env('REFRESH_TOKEN_LIFETIME_MINUTES'))
+    ),
+
+    "ALGORITHM": env('JWT_ALGORITHM'),
+    "SIGNING_KEY": env('SECRET_KEY'),
+    "AUTH_HEADER_TYPES": ('JWT',)
 }

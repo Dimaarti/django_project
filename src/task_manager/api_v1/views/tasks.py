@@ -1,10 +1,14 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import PermissionsMixin
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular.utils import extend_schema
 from rest_framework import status, viewsets, permissions
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -90,8 +94,10 @@ from task_manager.models import Tasks
 
 
 @extend_schema(tags=["Tasks"])
-class TasksViewSet(viewsets.ModelViewSet):
+class TasksViewSet(viewsets.ModelViewSet, LoginRequiredMixin):
     queryset = Tasks.objects.all()
     serializer_class = TasksSerializer
+    permission_classes = [IsAdminUser]
+
 
 

@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 
-@lru_cache(maxsize=128)
+
 def positiv_sum(lst):
     if not lst:
         return 0
