@@ -48,7 +48,7 @@ class AssigneeFilter(admin.SimpleListFilter):
 
 @admin.register(Tasks)
 class TasksAdmin(admin.ModelAdmin):
-    fields = [("name", "status"), "description", "priority", "project", "comments_count", "created_at", "is_reopened"]
+    fields = [("name", "status"), "description", "priority", "project", "comments_count", "created_at", "is_reopened", "assignee"]
     list_display = ["name", "status", "priority", "assignee_email"]
     list_display_links = ["name", "status"]
     list_editable = ["priority"]

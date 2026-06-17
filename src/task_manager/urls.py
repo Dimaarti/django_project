@@ -3,12 +3,14 @@ from rest_framework.routers import DefaultRouter
 
 from task_manager.models import comments
 from .api_v1.views.tasks import TasksViewSet
+from .api_v1.views.users import UsersViewSet
 from .views import HomePageView, CommentsDeleteView, TaskEdit, AttachmentsCreate, TaskView, UserListView, \
     TaskCreateView, AttachmentsView
 
 
 routing = DefaultRouter()
 routing.register('tasks', TasksViewSet)
+routing.register('users', UsersViewSet)
 
 urlpatterns = [
     path('tasks/', TaskView.as_view(), name='tasks'),
