@@ -30,7 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -96,6 +96,9 @@ DATABASES = {
         "PASSWORD": env('PG_PASS'),
         "HOST": env('PG_HOST'),
         "PORT": env('PG_PORT'),
+        "TEST": {
+            "NAME": env('PG_TEST_NAME')
+        },
 
     },
 }
@@ -164,7 +167,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-CRISPY_TEMPLATE_PACK = ('bootstrap5', 'bootstrap4')
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 
 # caches
 

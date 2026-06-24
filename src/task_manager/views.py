@@ -46,7 +46,7 @@ from django.core.files import File
 class TaskView(ListView):
     template_name = "tasks.html"
     model = Tasks
-    paginate_by = 10
+    paginate_by = 15
     paginator_class = Paginator
     queryset = Tasks.objects.select_related("assignee").prefetch_related("comments", "attachments").all()
 
