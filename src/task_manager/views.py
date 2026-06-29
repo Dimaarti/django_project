@@ -10,9 +10,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
+from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, DetailView, CreateView, DeleteView
 from django.views.generic.list import ListView
+from task_manager.tasks import add
 
 from task_manager.models import Tasks, Comments, Attachments
 from account.models import User
@@ -20,6 +22,20 @@ from task_manager.models.tasks import EducationTasks
 from .forms import CommentForm, TaskForm, AttachmentsForm
 from pathlib import Path
 from django.core.files import File
+
+
+
+def user_test_validate(pk):
+    res = add.delay(pk, pk + 1)
+    print(res)
+    return True
+
+
+def user_tasks(request, pk):
+    res = user_test_validate(pk)
+    print(res)
+    return HttpResponse(f"<h1>User </h1>")
+
 
 
 # MTV
@@ -66,7 +82,7 @@ class TaskView(ListView):
 #     return render(request, "users.html", context=context)
 
 @method_decorator(
-    cache_page(60*10, cache="redis_cache"), name="dispatch")
+    cache_page(60 * 10, cache="default"), name="dispatch")
 class UserListView(ListView):
     model = User
     template_name = "users.html"
@@ -77,7 +93,8 @@ class UserListView(ListView):
         context["users"] = self.queryset
         return context
 
-@method_decorator(cache_page(60*30, cache="db_cache"), name="dispatch")
+
+# @method_decorator(cache_page(60*30, cache="default"), name="dispatch")
 class HomePageView(TemplateView):
     template_name = "home.html"
 
@@ -121,7 +138,6 @@ class CommentsDeleteView(LoginRequiredMixin, DeleteView):
 #         form = TaskForm()
 #
 #     return render(request, "task_create.html", {"form": form})
-
 
 
 class TaskCreateView(CreateView):

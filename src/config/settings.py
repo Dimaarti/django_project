@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_celery_results',
+    'django_celery_beat',
     # applications
     'task_manager.apps.TaskManagerConfig',
     'account.apps.AccountConfig',
@@ -174,17 +176,17 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 
 
 CACHES = {
-    "db_cache": {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "cache_table",
-    },
+    # "db_cache": {
+    #     "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+    #     "LOCATION": "cache_table",
+    # },
+    #
+    # "file_cache": {
+    #     "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+    #     "LOCATION": "/var/tmp/django_cache",
+    # },
 
     "default": {
-        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": "/var/tmp/django_cache",
-    },
-
-    "redis_cache": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379",
     }
@@ -229,3 +231,16 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env('SECRET_KEY'),
     "AUTH_HEADER_TYPES": ('JWT',)
 }
+
+# celery
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 1800
+#где будет храниться результат
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+#брокер который будет выполнять
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeouts': 3600}
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['application/json']
