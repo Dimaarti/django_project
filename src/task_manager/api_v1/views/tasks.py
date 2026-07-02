@@ -1,14 +1,20 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import PermissionsMixin
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from rest_framework import status, viewsets, permissions
+from rest_framework import status, viewsets, permissions, filters
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from task_manager.api_v1.serializers.tasks import TasksSerializer
+from config.pagination import CustomPagination
+from task_manager.api_v1.serializers.tasks import TasksSerializer, TasksCreatedFilter
 from task_manager.models import Tasks
 
 
@@ -90,8 +96,21 @@ from task_manager.models import Tasks
 
 
 @extend_schema(tags=["Tasks"])
-class TasksViewSet(viewsets.ModelViewSet):
+class TasksViewSet(viewsets.ModelViewSet, LoginRequiredMixin):
     queryset = Tasks.objects.all()
     serializer_class = TasksSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_class = TasksCreatedFilter
+    search_fields = ['description']
+    ordering_fields = ['created_at', 'priority']
+    #
+    #
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return Tasks.objects.filter(assignee=user)
+    #
+
 
 

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -30,7 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -47,6 +47,11 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'rest_framework',
     'drf_spectacular',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'django_filters',
+    'django_celery_results',
+    'django_celery_beat',
     # applications
     'task_manager.apps.TaskManagerConfig',
     'account.apps.AccountConfig',
@@ -93,6 +98,9 @@ DATABASES = {
         "PASSWORD": env('PG_PASS'),
         "HOST": env('PG_HOST'),
         "PORT": env('PG_PORT'),
+        "TEST": {
+            "NAME": env('PG_TEST_NAME')
+        },
 
     },
 }
@@ -162,33 +170,43 @@ INTERNAL_IPS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 
 # caches
 
 
 CACHES = {
-    "db_cache": {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "cache_table",
-    },
+    # "db_cache": {
+    #     "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+    #     "LOCATION": "cache_table",
+    # },
+    #
+    # "file_cache": {
+    #     "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+    #     "LOCATION": "/var/tmp/django_cache",
+    # },
 
-    "default":{
-        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": "c:/foo/bar",
-    },
-
-    "redis_cache":{
+    "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
 
-#rest framework
-
+# rest framework
 
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+
 }
 
 SPECTACULAR_SETTINGS = {
@@ -198,3 +216,31 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+# jwt
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=int(env('ACCESS_TOKEN_LIFETIME_MINUTES'))
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=int(env('REFRESH_TOKEN_LIFETIME_MINUTES'))
+    ),
+
+    "ALGORITHM": env('JWT_ALGORITHM'),
+    "SIGNING_KEY": env('SECRET_KEY'),
+    "AUTH_HEADER_TYPES": ('JWT',)
+}
+
+# celery
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 1800
+#где будет храниться результат
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+#брокер который будет выполнять
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeouts': 3600}
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['application/json']
